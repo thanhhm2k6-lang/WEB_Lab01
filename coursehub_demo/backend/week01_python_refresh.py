@@ -1,4 +1,4 @@
-print("CourseHub - Buoi 1")
+#print("CourseHub - Buoi 1")
 
 students = [
     {"id": "22000001", "name": "Nguyen Minh Anh", "major": "KHDL"},
@@ -25,7 +25,7 @@ enrollments = [
 
 for course in courses:
     remaining = course["capacity"] - course["enrolled"]
-    print(course["code"], "- con", remaining, "cho")
+    #print(course["code"], "- con", remaining, "cho")
 
 
 def find_course(course_code):
@@ -33,7 +33,7 @@ def find_course(course_code):
         if course["code"] == course_code:
             return course
     return None
-print(find_course("INT2204"))
+# print(find_course("INT2204"))
 
 
 def can_enroll(student_id, course_code):
@@ -49,7 +49,7 @@ def can_enroll(student_id, course_code):
     if duplicated:
         return False, "Sinh vien da dang ky hoc phan nay"
     return True, "Co the dang ky"
-print(can_enroll("22000002", "INT2204"))
+# print(can_enroll("22000002", "INT2204"))
 
 # 7. Xử lý dữ liệu nhập sai
 try:
@@ -68,4 +68,29 @@ def search_courses(keyword):
         if normalized in code or normalized in name:
             results.append(course)
     return results
-print(search_courses("web"))
+# print(search_courses("web"))
+
+##### Enroll
+def enroll_student(student_id, course_code):
+    student_exists = any(s["id"] == student_id for s in students)
+    if not student_exists:
+        return False, 'Sinh vien khong ton tai'
+
+    course = find_course(course_code)
+    if course is None:
+        return False, 'Hoc phan khong ton tai'
+
+    duplicated = any(
+        item["student_id"] == student_id and item["course_code"] == course_code
+        for item in enrollments
+    )
+    if duplicated:
+        return False, 'Sinh vien da dang ky hoc phan nay'
+
+    if course["enrolled"] >= course["capacity"]:
+        return False, 'Lop da du so luong'
+
+    enrollments.append({"student_id": student_id, "course_code": course_code})
+    course["enrolled"] += 1
+    
+    return True, 'Dang ky thanh cong'
